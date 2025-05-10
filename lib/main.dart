@@ -1,33 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart'; // Helper method for reusable text boxes
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:im_rich/AboutMe.dart';
 import 'package:im_rich/MyProjects.dart';
 import 'package:flutter/services.dart';
 
+// void main() {
+//   runApp(
+//     DevicePreview(
+//       enabled: true, // Enable the virtual device preview
+//       builder: (context) => MaterialApp(
+//         debugShowCheckedModeBanner: false,
+//         useInheritedMediaQuery: true, // Allows responsive design
+//         home: MyApp(),
+//       ),
+//     ),
+//   );
+// }
+
 void main() {
   runApp(
     DevicePreview(
-      enabled: true, // Enable the virtual device preview
+      enabled: false, // Enable the virtual device preview
       builder: (context) => MaterialApp(
-        debugShowCheckedModeBanner: false,
+        debugShowCheckedModeBanner: true,
         useInheritedMediaQuery: true, // Allows responsive design
-        home: MyApp(),
+        initialRoute: '/myApp', // Define the initial route
+        routes: {
+          '/myApp': (context) => MyHomePage(),
+          '/aboutMe': (context) => AboutMeScreen(),
+          '/projects': (context) => MyProjectsScreens(),
+        },
       ),
     ),
   );
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const MyHomePage(),
-    );
-  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -38,13 +45,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  // int _counter = 0;
+  //
+  // void _incrementCounter() {
+  //   setState(() {
+  //     _counter++;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -93,34 +100,40 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: 200,
                   child: Divider(color: Colors.teal.shade100),
                 ),
+                _buildNextPage(FontAwesomeIcons.info, 'About Me', '/aboutMe'),
                 _buildNextPage(
-                    FontAwesomeIcons.info, 'About Me', AboutMeScreen()),
-                _buildNextPage(FontAwesomeIcons.code, 'A few projects',
-                    MyProjectsScreens()),
-
-                //_buildTextBox(Icons.home, 'Oluwadamilola Michael Sunday'),
+                    FontAwesomeIcons.code, 'A few projects', '/projects'),
                 SizedBox(
                   height: 20,
                   width: 250,
                   child: Divider(color: Colors.teal.shade100),
                 ),
-                _buildTextButton(FontAwesomeIcons.xTwitter, 'SundayMik'),
-                _buildTextButton(FontAwesomeIcons.github, 'MichaelOS10'),
-
                 _buildTextButton(
-                    FontAwesomeIcons.linkedin, 'Oluwadamilola Michael Sunday'),
+                    'Colors.black',
+                    'X/Twitter',
+                    FontAwesomeIcons.xTwitter,
+                    'SundayMik',
+                    "https://x.com/home?lang=en-gb",
+                    context),
+                _buildTextButton(
+                    'Colors.black',
+                    'GitHub',
+                    FontAwesomeIcons.github,
+                    'MichaelOS10',
+                    "https://github.com/Michaelos10?tab=repositories",
+                    context),
+                _buildTextButton(
+                    'Colors.blue',
+                    'linkedIn',
+                    FontAwesomeIcons.linkedin,
+                    'Oluwadamilola Michael Sunday',
+                    "https://www.linkedin.com/in/oluwadamilola-michael-sunday-a20289191/",
+                    context),
               ],
             ),
           ),
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _incrementCounter,
-      //   tooltip: 'Next Screen',
-      //   child: const Icon(Icons.arrow_forward),
-      //   foregroundColor: Colors.teal,
-      //   backgroundColor: Colors.white,
-      // ),
     );
   }
 
@@ -165,13 +178,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return text;
   }
 
-  Widget _buildNextPage(IconData icon, String text, Widget screen) {
+  Widget _buildNextPage(IconData icon, String text, String routeName) {
     return TextButton(
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => screen),
-        );
+        Navigator.pushNamed(context, routeName);
       },
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -194,10 +204,11 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _buildTextButton(IconData icon, String text) {
+  Widget _buildTextButton(ColorData col, String mediaName, IconData icon,
+      String text, String url, BuildContext context) {
     return TextButton(
       onPressed: () {
-        print("linkedIn pressed");
+        _showNavigationDialog(context, mediaName, url);
       },
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -208,15 +219,55 @@ class _MyHomePageState extends State<MyHomePage> {
             borderRadius: BorderRadius.circular(16),
           ),
           child: ListTile(
-            leading: FaIcon(icon, color: Colors.teal), // FontAwesome icon
+            leading: FaIcon(icon, color: col),
             title: Text(
               text,
               style: TextStyle(fontSize: 16, color: Colors.black),
             ),
-            dense: true, // Makes the ListTile more compact
+            dense: true,
           ),
         ),
       ),
     );
+  }
+
+  void _showNavigationDialog(BuildContext context, String text, String url) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(""),
+          content: Text("Check him up on $text."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                "Cancel",
+                style: TextStyle(fontSize: 16, color: Colors.black),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _launchURL(url);
+              },
+              child: Text("OK",
+                  style: TextStyle(fontSize: 16, color: Colors.black)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _launchURL(String url) async {
+    Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      print("Could not launch $url");
+    }
   }
 }

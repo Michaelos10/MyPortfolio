@@ -7,24 +7,26 @@ class MyProjectsScreens extends StatelessWidget {
   final List<Map<String, dynamic>> projects = [
     {
       "images": [
-        "assets/projects/ringing.png",
-        "assets/project2_1.png",
-        "assets/project1_2.png",
-        "assets/project1_3.png"
+        "assets/projects/imolede/imoledeLandingPage.png",
+        "assets/projects/imolede/imoledeloginPage.png",
+        "assets/projects/imolede/homePage.png",
+        "assets/projects/imolede/menuPage.png",
+        "assets/projects/imolede/profileScreen.png"
       ],
-      "title": "Energy Monitoring App",
+      "title": "Imolede",
       "description":
           "Connects users to their energy-monitoring hardware device for remote energy control",
-      "youtube": "https://www.youtube.com"
+      "youtube": "https://www.google.com"
     },
     {
       "images": [
-        "assets/project2_1.png",
-        "assets/project2_2.png",
-        "assets/project2_3.png"
+        "assets/projects/counsel/counselorLogin.png",
+        "assets/projects/counsel/chatScreen.png",
+        "assets/projects/counsel/ringing.png",
+        "assets/projects/counsel/ongoing call.png"
       ],
-      "title": "E-commerce App",
-      "description": "A complete Flutter-based shopping app.",
+      "title": "Counsel",
+      "description": "A counselling app",
       "youtube": "https://www.youtube.com"
     },
     {
@@ -33,7 +35,17 @@ class MyProjectsScreens extends StatelessWidget {
         "assets/project3_2.png",
         "assets/project3_3.png"
       ],
-      "title": "AI Chatbot",
+      "title": "MedShield",
+      "description": "An AI-powered chatbot using Flutter & Firebase.",
+      "youtube": "https://www.youtube.com/watch?v=your_project_link"
+    },
+    {
+      "images": [
+        "assets/project3_1.png",
+        "assets/project3_2.png",
+        "assets/project3_3.png"
+      ],
+      "title": "Choose your Adventure",
       "description": "An AI-powered chatbot using Flutter & Firebase.",
       "youtube": "https://www.youtube.com/watch?v=your_project_link"
     },
@@ -153,7 +165,7 @@ class ProjectTile extends StatelessWidget {
               onPressed: _launchURL,
               icon: const Icon(Icons.video_library, color: Colors.red),
               label: const Text(
-                "Watch on YouTube",
+                "Watch",
                 style: TextStyle(color: Colors.black87),
               ),
             ),
